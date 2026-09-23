@@ -17,10 +17,7 @@
    ```
    git clone https://github.com/waveSDN/haiba "$HOME\Documents\haybah-nd96"
    ```
-2. انسخ مقطعيك للمجلد `footage` بهالأسماء:
-   - «مقطع اليوم الوطني.MOV» ← `footage\gmc.mov`
-   - «مقطع.MOV» ← `footage\box.mov`
-3. حط لقطات Higgsfield المعتمدة في `shots`: `s02.mp4` و`s06.mp4`
+2. حط لقطات Higgsfield المعتمدة في `shots` بأسماء `01.mp4` … `12.mp4` (بعد ما نولّدها).
 
 ## ٣. التشغيل
 في PowerShell:
@@ -32,10 +29,10 @@ claude
 
 ## ٤. أول رسالة لـ Claude Code (انسخها كما هي)
 ```
-اقرأ CLAUDE.md. تأكد إن ffmpeg وPython موجودين وثبّتهم لو ناقصين، وشغّل pip install -r requirements.txt. ثبّت Higgsfield: npm i -g @higgsfield/cli ثم higgsfield auth login ثم npx skills add higgsfield-ai/skills. بعدها شغّل python scripts/assemble.py --preview وورني النسخة الأولية. لو احتجنا نعيد توليد s02 أو s06، اعرض علي التكلفة قبل ما تصرف أي كريدت.
+اقرأ CLAUDE.md. تأكد إن ffmpeg وPython موجودين وثبّتهم لو ناقصين، وشغّل pip install -r requirements.txt. بعدها شغّل python scripts/assemble.py --preview وورني النسخة الأولية. لا تولّد أي شي في Higgsfield قبل ما تعرض علي التكلفة وتسألني.
 ```
 
 ## ٥. بعدها
-- التعليق الصوتي: سجّله وحطه في `audio\vo.wav`
+- التعليق الصوتي (صوت الجد): يتولّد بـ Higgsfield ويروح `audio\vo.wav`
 - الموسيقى: `audio\music.mp3`
-- أي تعديل: قل لـ Claude Code وش تبي بالعربي، مثل «طوّل لقطة الجمس في المشهد ٣» أو «جرّب برومبت ثاني للمشهد ٢».
+- أي تعديل: قل لـ Claude Code وش تبي بالعربي، مثل «طوّل لقطة الخيّالة» أو «جرّب برومبت ثاني للمشهد ٩».

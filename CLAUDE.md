@@ -1,42 +1,47 @@
-# هيبة | إعلان اليوم الوطني ٩٦
+# هيبة | «الإرث» | إعلان اليوم الوطني ٩٦
 
-إعلان عمودي ٣٠ ثانية (1080x1920، 30fps) لبوكس هدايا **هيبة | HAYBAH**.
-الشعار: «هيبة مو بس براند.. هيبة تاريخ!»، والخاتمة: «كل عام والوطن بهيبته، اليوم الوطني ٩٦ | ٢٣ سبتمبر».
+إعلان ٥٠ ثانية مولّد بالذكاء الاصطناعي (Higgsfield) لبوكس هدايا **هيبة | HAYBAH**.
+الأساس أفقي 16:9 (1920x1080، 30fps)، والعمودي 9:16 ينقص منه.
+الفكرة والتعليق في `storyboard/script.txt` (مسودة ٢ معتمدة). المرجع: مقطع تيك توك تاريخي (خيّالة، رايات، قلعة، ولد، فارس بالسيف).
 صاحب المشروع يكتب بالعربي (لهجة سعودية). رد عليه بنفس الأسلوب.
+
+## اسأل صاحب المشروع عن كل شي
+طلب صريح: **اسأله قبل أي قرار، صغير أو كبير** (فكرة، لقطة، نص، لون، حذف، توليد). اعرض خيارات واضحة، وحط توصيتك أول خيار.
 
 ## الملفات
 | المسار | وش فيه |
 |---|---|
-| `storyboard/timeline.json` | **مصدر الحقيقة للمونتاج**: المشاهد بالترتيب. المشهد إما مصدر واحد (`sources`+`in`+`dur`) أو عدة لقطات (`shots`) |
-| `storyboard/script.txt` | نص التعليق الصوتي مع التوقيت. لازم يطابق timeline.json |
-| `scripts/assemble.py` | يركّب الفيديو بـ ffmpeg ويدمج الصوت |
-| `footage/` | تصوير الجوال: `gmc.mov` (مقطع اليوم الوطني) و`box.mov` (مقطع البوكس). حدود القطع في `footage/README.txt` |
-| `shots/` | لقطات Higgsfield المعتمدة: `s02.mp4` و`s06.mp4`. التجارب في `shots/takes/` |
-| `audio/` | `vo.wav` التعليق (٣٠ث من الصفر) و`music.mp3` اختياري |
-| `brand/` | `endcard.jpg` الخاتمة، `logo-card.png`، `box-studio.jpg`، وصور مؤقتة للمشهدين ٢ و٦ |
-| `fonts/` | خط «عام الحرف اليدوية» (The Year of Handicrafts). عربي فقط، ما فيه حروف لاتينية |
-| `higgsfield/prompts.md` | البرومبتات والأسعار |
-| `higgsfield/renders.json` | مخرجات Higgsfield (رسومات بستايل البوكس + لقطة s06). تنزل لـ `higgsfield/renders/` |
+| `storyboard/script.txt` | القصة والتعليق بالتوقيت (المعتمد) |
+| `storyboard/timeline.json` | **مصدر الحقيقة للمونتاج**: ١٣ مشهد، `dur`، و`vx` (وين ينقص العمودي: ٠ يسار، ٠٫٥ نص، ١ يمين). المدة الكلية في `duration` |
+| `higgsfield/prompts.md` | برومبتات الشخصيات واللقطات والستايل والأسعار (مسودة لين تنعتمد) |
+| `shots/` | لقطات Higgsfield المعتمدة: `01.mp4` … `12.mp4`. التجارب في `shots/takes/` |
+| `audio/` | `vo.wav` صوت الجد (من الثانية صفر)، `music.mp3` من صاحب المشروع |
+| `brand/` | `logo-card.png`، `box-studio.jpg` (البوكس)، `refs/` (محتوى البوكس: مسبحة، قلم، بوكس مفتوح)، `endcard-16x9.png` و`endcard-9x16.png` |
+| `fonts/` | خط «عام الحرف اليدوية». عربي فقط، ما فيه حروف لاتينية |
+| `scripts/assemble.py` | يركّب الفيديو ويدمج الصوت |
+| `scripts/endcard.py` | يطلع كرتين الختام |
 | `out/` | المخرجات، ما تنرفع على git |
 
-ملفات الميديا (mov/mp4/wav/mp3) ما تنرفع على git. تبقى على جهاز صاحب المشروع.
+ملفات الميديا (mov/mp4/wav/mp3) ما تنرفع على git.
 
 ## الأوامر
 ```
 pip install -r requirements.txt
-python scripts/assemble.py --preview   # out/preview.mp4 (540x960، سريع)
-python scripts/assemble.py             # out/haybah-nd96.mp4 (النهائي)
-python scripts/assemble.py --only 3    # out/scene-3.mp4 مع الصوت من نفس التوقيت
-python scripts/fetch_renders.py        # ينزّل مخرجات Higgsfield
-python scripts/poster.py               # out/poster.png بوستر اليوم الوطني من art-poster.png
+python scripts/assemble.py --preview              # out/preview-16x9.mp4 (نص الدقة)
+python scripts/assemble.py --preview --vertical   # out/preview-9x16.mp4
+python scripts/assemble.py                        # out/haybah-nd96-16x9.mp4
+python scripts/assemble.py --vertical             # out/haybah-nd96-9x16.mp4
+python scripts/assemble.py --only 9               # مشهد واحد مع صوته
+python scripts/endcard.py                         # brand/endcard-*.png
 ```
-كل تشغيل يطلع `out/contact-sheet.jpg` (فريم من نص كل مشهد، من اليمين لليسار). افتحها وشيّك بعينك بعد أي تعديل.
+كل تشغيل يطلع `out/contact-sheet-<orient>.jpg`. افتحها وشيّك بعينك بعد أي تعديل.
 
 ## قواعد
-- أي تعديل على المونتاج («طوّل لقطة الجمس في المشهد ٣») يصير في `timeline.json`: غيّر `dur` أو `in`. مقاطع footage مقطّعة على الإيقاع (قطع كل ~٠٫٧ث)، فلازم `in`+`dur` يبقى داخل حدود لقطة وحدة من `footage/README.txt` وإلا بيطلع فريم من اللقطة اللي بعدها. مجموع المدد لازم يبقى **٣٠ ثانية**، فلو طوّلت مشهد قصّر اللي جنبه. بعدها حدّث التوقيتات في `script.txt` وشغّل `--preview`.
-- المصدر الناقص يتعوّض تلقائي بـ `still` أو بكرت بديل. السكربت يطبع وش استخدم لكل مشهد، فاقرأ المخرجات وبلّغ عن الناقص.
-- مقاطع footage الحالية SDR. لو جات مقاطع آيفون HDR (HLG) فالسكربت يحوّلها SDR بـ zscale. لو طلع تنبيه إن zscale مو موجود، ثبّت ffmpeg كامل: `winget install Gyan.FFmpeg`.
-- **Higgsfield: لا تصرف أي كريدت قبل ما تعرض التكلفة وتاخذ موافقة صريحة.** الخطة مجانية والرصيد شبه خالص. اللقطات المعتمدة موجودة.
-- أي توليد جديد: سجّله في `higgsfield/renders.json` (الاسم، job_id، الرابط، وين ينستخدم) عشان `fetch_renders.py` ينزّله. أي تجربة جديدة تنحفظ في `shots/takes/` ولا تستبدل `s02.mp4` أو `s06.mp4` إلا لما يعتمدها صاحب المشروع.
-- النصوص العربية على الشاشة ترسمها Pillow بخط `fonts/` (يحتاج raqm أو arabic-reshaper + python-bidi). ffmpeg drawtext ما يشكّل العربي صح، فلا تستخدمه.
+- **Higgsfield: لا تصرف أي كريدت قبل ما تعرض التكلفة (`get_cost: true`) وتاخذ موافقة صريحة.** الخطة مجانية، والتوليد ينتظر لين يشحن صاحب المشروع (تقريبًا ١١٠ كريدت).
+- الخطة المجانية تشغّل مهمة وحدة بس في نفس الوقت، فالتوليدات تنرسل ورا بعض. وموديل `gpt_image_2_5` يحتاج خطة Basic.
+- روابط نتائج Higgsfield (`*.cloudfront.net`) ممنوعة في شبكة البيئة السحابية. إما يسمح لها صاحب المشروع، أو تنزل على جهازه.
+- أي توليد جديد: سجّله في `higgsfield/renders.json` (الاسم، job_id، الرابط، وين ينستخدم). والتجارب تروح `shots/takes/`، وما تصير `shots/NN.mp4` إلا لما يعتمدها صاحب المشروع.
+- التوليد أفقي، والعمودي ينقص من النص، فكل برومبت لازم يحط الموضوع في نص الكادر.
+- أي تعديل على المونتاج يصير في `timeline.json`. مجموع المدد لازم يساوي `duration` (٥٠)، وحدّث `script.txt` معه.
+- النصوص العربية على الشاشة ترسمها Pillow بخط `fonts/`. ffmpeg drawtext ما يشكّل العربي صح، فلا تستخدمه.
 - الهوية: بني غامق `#241312`، ذهبي `#F8B040`، كريمي `#F0E2CE`.

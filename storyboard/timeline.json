@@ -1,83 +1,164 @@
 {
-  "_note": "مصدر الحقيقة للمونتاج. المشهد إما sources+in+dur أو shots (لقطات قصيرة: src ملف أو قائمة ملفات، أول موجود يُستخدم). in = من أي ثانية نبدأ في المقطع. مقاطع footage مقطّعة على الإيقاع (قطع كل ~٠٫٧ث)، فخل كل لقطة داخل حدود القطع المكتوبة في footage/README.txt.",
-  "width": 1080,
-  "height": 1920,
+  "_note": "مصدر الحقيقة للمونتاج. الأفقي 16:9 هو الأساس، والعمودي ينقص منه (vx: ٠ يسار، ٠٫٥ نص، ١ يمين). shots/NN.mp4 = لقطات Higgsfield المعتمدة. التعليق (vo) للمرجع بس، والصوت الفعلي في audio/vo.wav.",
+  "width": 1920,
+  "height": 1080,
   "fps": 30,
+  "duration": 50,
   "scenes": [
     {
       "id": 1,
-      "title": "من رسمة البوكس للواقع",
-      "desc": "الديرة الطين والخيّال بستايل رسمة البوكس، ثم الجمس في الرسمة، ثم الجمس الحقيقي.",
-      "shots": [
-        {"src": "higgsfield/renders/art-village.png", "dur": 1.3},
-        {"src": "higgsfield/renders/art-gmc-road.png", "dur": 1.2},
-        {"src": "footage/gmc.mov", "in": 15.12, "dur": 1.0}
-      ]
+      "title": "الخيّالة وقت الفجر",
+      "era": "past",
+      "sources": [
+        "shots/01.mp4"
+      ],
+      "in": 0.0,
+      "dur": 4,
+      "vx": 0.5,
+      "vo": "يا وليدي.. هالمسبحة ما هيب أي مسبحة."
     },
     {
       "id": 2,
-      "title": "البوكس مكان الجريدة",
-      "desc": "الرجل يقرأ SAUDI NEWS، قريب على الجريدة، ثم يرفع بوكس هيبة مكانها (لقطة Higgsfield).",
-      "shots": [
-        {"src": "footage/gmc.mov", "in": 0.02, "dur": 0.66},
-        {"src": "footage/gmc.mov", "in": 4.19, "dur": 0.62},
-        {"src": ["shots/s02.mp4", "brand/s02-still.jpg"], "dur": 3.22}
-      ]
+      "title": "الأب يعطي ولده المسبحة",
+      "era": "past",
+      "sources": [
+        "shots/02.mp4"
+      ],
+      "in": 0.0,
+      "dur": 4,
+      "vx": 0.5,
+      "vo": "عطانيها أبوي.. يوم إني بقدّك وأصغر."
     },
     {
       "id": 3,
-      "title": "الهدايا في الجمس",
-      "desc": "اليد على الطبلون، الباب ينفتح، الأكياس تنزل من الجمس وعلى المرتبة.",
-      "shots": [
-        {"src": "footage/gmc.mov", "in": 0.75, "dur": 1.38},
-        {"src": "footage/gmc.mov", "in": 6.25, "dur": 0.63},
-        {"src": "footage/gmc.mov", "in": 6.92, "dur": 0.66},
-        {"src": "footage/gmc.mov", "in": 7.62, "dur": 0.58},
-        {"src": "footage/gmc.mov", "in": 13.12, "dur": 0.63},
-        {"src": "footage/gmc.mov", "in": 13.79, "dur": 0.62}
-      ]
+      "title": "وجه الولد",
+      "era": "past",
+      "sources": [
+        "shots/03.mp4"
+      ],
+      "in": 0.0,
+      "dur": 3,
+      "vx": 0.5,
+      "vo": ""
     },
     {
       "id": 4,
-      "title": "فتح البوكس",
-      "desc": "الأكياس على الكنب، رسمة الكيس، الكيس بيده، البوكس على حضنه، يفتحه، القلم والمسبحة.",
-      "shots": [
-        {"src": "footage/box.mov", "in": 0.02, "dur": 0.76},
-        {"src": "footage/box.mov", "in": 0.82, "dur": 0.64},
-        {"src": "footage/box.mov", "in": 1.67, "dur": 0.76},
-        {"src": "footage/box.mov", "in": 3.24, "dur": 0.79},
-        {"src": "footage/box.mov", "in": 4.07, "dur": 0.78},
-        {"src": "footage/box.mov", "in": 4.89, "dur": 0.77}
-      ]
+      "title": "القائد قدام قلعة الطين",
+      "era": "past",
+      "sources": [
+        "shots/04.mp4"
+      ],
+      "in": 0.0,
+      "dur": 4,
+      "vx": 0.5,
+      "vo": "يوم إن الرجال شدّوا على خيلهم.."
     },
     {
       "id": 5,
-      "title": "التفاصيل والخيّال",
-      "desc": "القلم، المسبحة بالكف، المبخرة، المسبحة على الجلد، ثم الخيّال بالعلم وقت الغروب بستايل الرسمة.",
-      "shots": [
-        {"src": "footage/box.mov", "in": 5.70, "dur": 0.82},
-        {"src": "footage/box.mov", "in": 7.39, "dur": 0.76},
-        {"src": "footage/box.mov", "in": 12.22, "dur": 0.80},
-        {"src": "footage/box.mov", "in": 13.87, "dur": 0.74},
-        {"src": "higgsfield/renders/art-rider-flag.png", "dur": 1.38}
-      ]
+      "title": "الفارس يرفع سيفه وقت الغروب",
+      "era": "past",
+      "sources": [
+        "shots/05.mp4"
+      ],
+      "in": 0.0,
+      "dur": 4,
+      "vx": 0.5,
+      "vo": "وتوحّدت هالديرة تحت راية وحدة."
     },
     {
       "id": 6,
-      "title": "البوكس على مرتبة الجمس",
-      "desc": "البوكس والأكياس على مرتبة الجمس وقت الغروب، الكاميرا تقرّب (Higgsfield Cinema Studio).",
-      "sources": ["shots/s06.mp4", "higgsfield/renders/s06-cinema.mp4"],
-      "still": "brand/s06-still.jpg",
+      "title": "كف الولد تنقفل على المسبحة",
+      "era": "past",
+      "sources": [
+        "shots/06.mp4"
+      ],
       "in": 0.0,
-      "dur": 4.0
+      "dur": 3,
+      "vx": 0.5,
+      "vo": "من يومها.. وهي بيدي."
     },
     {
       "id": 7,
-      "title": "الخاتمة",
-      "sources": ["brand/endcard.jpg"],
+      "title": "كف الجد تنفتح على نفس المسبحة",
+      "era": "today",
+      "sources": [
+        "shots/07.mp4"
+      ],
       "in": 0.0,
-      "dur": 4.5,
-      "desc": "هيبة مو بس براند.. هيبة تاريخ! كل عام والوطن بهيبته. اليوم الوطني ٩٦ | ٢٣ سبتمبر"
+      "dur": 4,
+      "vx": 0.5,
+      "vo": ""
+    },
+    {
+      "id": 8,
+      "title": "الحفيد يحب راس جده",
+      "era": "today",
+      "sources": [
+        "shots/08.mp4"
+      ],
+      "in": 0.0,
+      "dur": 4,
+      "vx": 0.5,
+      "vo": ""
+    },
+    {
+      "id": 9,
+      "title": "الجد يعطيه بوكس هيبة",
+      "era": "today",
+      "sources": [
+        "shots/09.mp4"
+      ],
+      "in": 0.0,
+      "dur": 4,
+      "vx": 0.5,
+      "vo": "واليوم.. جا دورك."
+    },
+    {
+      "id": 10,
+      "title": "الحفيد يفتح البوكس",
+      "era": "today",
+      "sources": [
+        "shots/10.mp4"
+      ],
+      "in": 0.0,
+      "dur": 4,
+      "vx": 0.5,
+      "vo": ""
+    },
+    {
+      "id": 11,
+      "title": "دخان العود يتشكل خيّالة",
+      "era": "today",
+      "sources": [
+        "shots/11.mp4"
+      ],
+      "in": 0.0,
+      "dur": 4,
+      "vx": 0.5,
+      "vo": "الهيبة ما تنشرى يا وليدي.."
+    },
+    {
+      "id": 12,
+      "title": "المسبحة القديمة في كف الحفيد",
+      "era": "today",
+      "sources": [
+        "shots/12.mp4"
+      ],
+      "in": 0.0,
+      "dur": 3,
+      "vx": 0.5,
+      "vo": "الهيبة تنورث."
+    },
+    {
+      "id": 13,
+      "title": "الختام",
+      "era": "endcard",
+      "sources": [
+        "brand/endcard-{orient}.png"
+      ],
+      "in": 0.0,
+      "dur": 5,
+      "vo": "كل عام والوطن بهيبته."
     }
   ]
 }

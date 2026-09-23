@@ -25,11 +25,11 @@ def logo_disc(size):
     return disc
 
 
-def sadu_band(draw, y, color, step=46):
+def sadu_band(draw, y, color, step=46, width=W):
     """شريط السدو (معينات) مثل حافة البوكس."""
-    draw.line([(0, y - 30), (W, y - 30)], fill=color, width=3)
-    draw.line([(0, y + 30), (W, y + 30)], fill=color, width=3)
-    for x in range(step // 2, W, step):
+    draw.line([(0, y - 30), (width, y - 30)], fill=color, width=3)
+    draw.line([(0, y + 30), (width, y + 30)], fill=color, width=3)
+    for x in range(step // 2, width, step):
         s = 14
         draw.polygon([(x, y - s), (x + s, y), (x, y + s), (x - s, y)], outline=color, width=3)
         draw.rectangle([x - 3, y - 3, x + 3, y + 3], fill=color)

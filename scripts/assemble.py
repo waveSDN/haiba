@@ -1,9 +1,13 @@
 #!/usr/bin/env python3
 """يركّب إعلان هيبة (اليوم الوطني ٩٦) من storyboard/timeline.json.
 
-    python scripts/assemble.py --preview   # نسخة أولية سريعة 540x960 -> out/preview.mp4
-    python scripts/assemble.py             # النسخة النهائية 1080x1920 -> out/haybah-nd96.mp4
-    python scripts/assemble.py --only 3    # مشهد واحد بس -> out/scene-3.mp4
+    python scripts/assemble.py --preview              # نسخة أولية سريعة بنص الدقة -> out/preview-16x9.mp4
+    python scripts/assemble.py                        # النسخة النهائية الأفقية -> out/haybah-nd96-16x9.mp4
+    python scripts/assemble.py --vertical             # النسخة العمودية المقصوصة -> out/haybah-nd96-9x16.mp4
+    python scripts/assemble.py --only 3 --vertical    # مشهد واحد بس -> out/scene-3-9x16.mp4
+
+العمودي ينقص من الأفقي: كل لقطة تقدر تحدد وين ينقص بـ vx (٠ يسار، ٠٫٥ نص، ١ يمين).
+أي مصدر فيه {orient} يتبدّل بـ 16x9 أو 9x16، مثل brand/endcard-{orient}.png.
 
 أي مقطع ناقص يتعوّض بصورة (still) أو بكرت بديل مكتوب عليه اسم الملف الناقص،
 عشان تقدر تشوف الإيقاع قبل ما تكتمل المواد. التعليق الصوتي والموسيقى من audio/
@@ -121,18 +125,20 @@ def glow_background(w, h):
 
 
 def placeholder_card(scene, missing, w, h, dest):
-    s = w / 1080
+    s = min(w, h) / 1080
     img = glow_background(w // 4, h // 4).resize((w, h), Image.BICUBIC)
     d = ImageDraw.Draw(img)
-    d.ellipse([w / 2 - 170 * s, h * 0.3 - 170 * s, w / 2 + 170 * s, h * 0.3 + 170 * s], outline=GOLD, width=max(2, int(6 * s)))
-    draw_ar(d, (w / 2, h * 0.3), str(scene["id"]).translate(AR_DIGITS), font(FONT_AR, int(200 * s)), GOLD)
-    draw_ar(d, (w / 2, h * 0.47), scene["title"], font(FONT_AR, int(80 * s)), CREAM)
-    y = h * 0.55
-    for line in wrap_ar(scene.get("desc", ""), 26):
-        draw_ar(d, (w / 2, y), line, font(FONT_AR_REG, int(46 * s)), CREAM)
-        y += 70 * s
-    draw_ar(d, (w / 2, h * 0.78), "المقطع الناقص", font(FONT_AR_REG, int(44 * s)), GOLD)
-    d.text((w / 2, h * 0.82), missing, font=latin_font(int(44 * s)), fill=CREAM, anchor="mm")
+    cy = h / 2 - 300 * s
+    d.ellipse([w / 2 - 120 * s, cy - 120 * s, w / 2 + 120 * s, cy + 120 * s], outline=GOLD, width=max(2, int(5 * s)))
+    number = str(scene["id"]).split(".")[0].translate(AR_DIGITS)
+    draw_ar(d, (w / 2, cy), number, font(FONT_AR, int(140 * s)), GOLD)
+    draw_ar(d, (w / 2, cy + 200 * s), scene["title"], font(FONT_AR, int(72 * s)), CREAM)
+    y = cy + 290 * s
+    for line in wrap_ar(scene.get("desc", ""), 26 if h > w else 48)[:3]:
+        draw_ar(d, (w / 2, y), line, font(FONT_AR_REG, int(42 * s)), CREAM)
+        y += 60 * s
+    draw_ar(d, (w / 2, cy + 510 * s), "المقطع الناقص", font(FONT_AR_REG, int(38 * s)), GOLD)
+    d.text((w / 2, cy + 565 * s), missing, font=latin_font(int(38 * s)), fill=CREAM, anchor="mm")
     img.save(dest)
 
 
@@ -149,11 +155,11 @@ def wrap_ar(text, width):
 
 # ---------- المشاهد ----------
 
-def cover(src, w, h, dest):
+def cover(src, w, h, dest, vx=0.5):
     img = Image.open(src).convert("RGB")
     k = max(w / img.width, h / img.height)
     img = img.resize((math.ceil(img.width * k), math.ceil(img.height * k)), Image.LANCZOS)
-    left, top = (img.width - w) // 2, (img.height - h) // 2
+    left, top = round((img.width - w) * vx), (img.height - h) // 2
     img.crop((left, top, left + w, top + h)).save(dest)
 
 
@@ -167,7 +173,7 @@ def render_still(image, scene, cfg, dest, work, zoom=0.06):
     w, h, fps = cfg["w"], cfg["h"], cfg["fps"]
     frames = round(scene["dur"] * fps)
     big = work / f"scene-{scene['id']}-still.png"
-    cover(image, w * 2, h * 2, big)
+    cover(image, w * 2, h * 2, big, scene.get("vx", 0.5))
     zp = (f"zoompan=z='1+{zoom}*on/{frames}':x='iw/2-(iw/zoom/2)':y='ih/2-(ih/zoom/2)'"
           f":d={frames}:s={w}x{h}:fps={fps},setsar=1")
     run(["-i", big, "-vf", zp, "-frames:v", frames, *encode_args(cfg), dest])
@@ -187,7 +193,7 @@ def render_video(src, scene, cfg, dest, warnings):
         else:
             warnings.append(f"المشهد {scene['id']}: {src.name} مصوّر HDR والـffmpeg ما فيه zscale، الألوان بتطلع باهتة. "
                             "ثبّت ffmpeg كامل (winget install Gyan.FFmpeg) أو صوّر SDR.")
-    chain += [f"scale={w}:{h}:force_original_aspect_ratio=increase:flags=lanczos", f"crop={w}:{h}", "setsar=1",
+    chain += [f"scale={w}:{h}:force_original_aspect_ratio=increase:flags=lanczos", f"crop={w}:{h}:(iw-{w})*{scene.get('vx', 0.5)}:(ih-{h})/2", "setsar=1",
               f"fps={fps}", f"tpad=stop_mode=clone:stop_duration={dur}"]
     run(["-ss", start, "-i", src, "-vf", ",".join(chain), "-t", dur, *encode_args(cfg), dest])
 
@@ -197,12 +203,13 @@ def scene_shots(scene):
     base = {"title": scene["title"], "desc": scene.get("desc", "")}
     if "shots" not in scene:
         return [{**base, "id": str(scene["id"]), "sources": scene["sources"], "in": scene.get("in", 0.0),
-                 "dur": scene["dur"], "still": scene.get("still")}]
+                 "dur": scene["dur"], "still": scene.get("still"), "vx": scene.get("vx", 0.5)}]
     shots = []
     for k, shot in enumerate(scene["shots"], 1):
         src = shot["src"]
         shots.append({**base, "id": f"{scene['id']}.{k}", "sources": [src] if isinstance(src, str) else src,
-                      "in": shot.get("in", 0.0), "dur": shot["dur"], "still": shot.get("still")})
+                      "in": shot.get("in", 0.0), "dur": shot["dur"], "still": shot.get("still"),
+                      "vx": shot.get("vx", scene.get("vx", 0.5))})
     return shots
 
 
@@ -212,6 +219,7 @@ def scene_dur(scene):
 
 def render_shot(shot, cfg, work, warnings):
     dest = work / f"shot-{shot['id']}.mp4"
+    shot = {**shot, "sources": [s.format(orient=cfg["orient"]) for s in shot["sources"]]}
     src = next((ROOT / s for s in shot["sources"] if (ROOT / s).exists()), None)
     if src and src.suffix.lower() in VIDEO_EXT:
         render_video(src, shot, cfg, dest, warnings)
@@ -277,14 +285,18 @@ def mix_audio(video, total, dest, offset=0.0):
 # ---------- لوحة المشاهد ----------
 
 def contact_sheet(clips, cfg, dest):
+    tw, th = (270, 480) if cfg["h"] > cfg["w"] else (320, 180)
     thumbs = []
     for clip, scene in clips:
         frame = clip.with_suffix(".jpg")
         run(["-ss", scene_dur(scene) / 2, "-i", clip, "-frames:v", 1, "-q:v", 3, frame])
-        thumbs.append(Image.open(frame).resize((270, 480)))
-    sheet = Image.new("RGB", (len(thumbs) * 280 + 10, 490), BG_DARK)
-    for i, t in enumerate(reversed(thumbs)):  # من اليمين لليسار
-        sheet.paste(t, (10 + i * 280, 5))
+        thumbs.append(Image.open(frame).resize((tw, th)))
+    cols = min(len(thumbs), 7)
+    rows = math.ceil(len(thumbs) / cols)
+    sheet = Image.new("RGB", (cols * (tw + 10) + 10, rows * (th + 10) + 10), BG_DARK)
+    for i, t in enumerate(thumbs):  # من اليمين لليسار
+        r, c = divmod(i, cols)
+        sheet.paste(t, (10 + (cols - 1 - c) * (tw + 10), 10 + r * (th + 10)))
     sheet.save(dest, quality=88)
 
 
@@ -292,18 +304,21 @@ def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--preview", action="store_true", help="نسخة أولية سريعة بنص الدقة")
     ap.add_argument("--only", type=int, help="ركّب مشهد واحد بس")
+    ap.add_argument("--vertical", action="store_true", help="النسخة العمودية 9:16 مقصوصة من الأفقي")
     ap.add_argument("--out", help="مسار ملف الإخراج")
     args = ap.parse_args()
 
     tl = json.loads(TIMELINE.read_text(encoding="utf-8"))
     scale = 0.5 if args.preview else 1.0
-    cfg = {"w": int(tl["width"] * scale) // 2 * 2, "h": int(tl["height"] * scale) // 2 * 2, "fps": tl["fps"],
+    width, height = (tl["height"], tl["width"]) if args.vertical else (tl["width"], tl["height"])
+    orient = "9x16" if args.vertical else "16x9"
+    cfg = {"w": int(width * scale) // 2 * 2, "h": int(height * scale) // 2 * 2, "fps": tl["fps"], "orient": orient,
            "crf": "28" if args.preview else "18", "preset": "veryfast" if args.preview else "slow"}
     scenes = [s for s in tl["scenes"] if args.only in (None, s["id"])]
     if not scenes:
         sys.exit(f"ما فيه مشهد رقمه {args.only}")
 
-    work = OUT / "_work" / ("preview" if args.preview else "final")
+    work = OUT / "_work" / f"{'preview' if args.preview else 'final'}-{orient}"
     shutil.rmtree(work, ignore_errors=True)
     work.mkdir(parents=True)
 
@@ -320,15 +335,15 @@ def main():
     silent = work / "video.mp4"
     concat([c for c, _ in clips], silent, work)
 
-    name = f"scene-{args.only}.mp4" if args.only else ("preview.mp4" if args.preview else "haybah-nd96.mp4")
+    name = (f"scene-{args.only}" if args.only else "preview" if args.preview else "haybah-nd96") + f"-{orient}.mp4"
     dest = Path(args.out) if args.out else OUT / name
     dest.parent.mkdir(parents=True, exist_ok=True)
     offset = sum(scene_dur(s) for s in tl["scenes"][: tl["scenes"].index(scenes[0])]) if args.only else 0.0
     vo, music = mix_audio(silent, t, dest, offset)
     if not args.only:
-        contact_sheet(clips, cfg, OUT / "contact-sheet.jpg")
+        contact_sheet(clips, cfg, OUT / f"contact-sheet-{orient}.jpg")
 
-    print(f"\n  المدة: {t:.1f}ث" + ("" if abs(t - 30) < 0.05 or args.only else "  (تنبيه: مو ٣٠ ثانية)"))
+    print(f"\n  المدة: {t:.1f}ث" + ("" if abs(t - tl["duration"]) < 0.05 or args.only else f"  (تنبيه: المفروض {tl['duration']}ث)"))
     print(f"  التعليق: {vo.name if vo else 'ما فيه (audio/vo.wav)'}   الموسيقى: {music.name if music else 'ما فيه (audio/music.mp3)'}")
     for w in warnings:
         print(f"  ! {w}")
