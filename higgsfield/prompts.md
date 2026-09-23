@@ -6,7 +6,8 @@
 - فيديو: `cinematic_studio_video_v2`، **Pro**، **16:9**، بدون صوت (الصوت والموسيقى نركّبها احنا).
 - العمودي ينقص من الأفقي، فخل الموضوع المهم في **نص الكادر** (`vertical-safe`).
 - الشخصيات تتثبّت بصور مرجعية (الخطوة ١) تنرفع مع كل لقطة.
-- المنتج: `brand/box-studio.jpg` (البوكس مسكّر)، `brand/refs/box-open.jpg` (البوكس مفتوح: بطاقة، قلم، مسبحة)، `brand/refs/misbaha-palm.jpg` و`misbaha-leather.jpg` (المسبحة).
+- المنتج: `brand/box-studio.jpg` (البوكس مسكّر)، `brand/refs/box-open.jpg` (البوكس مفتوح: **بطاقة، قلم، مسبحة بس**)، `brand/refs/misbaha-palm.jpg` و`misbaha-leather.jpg` (المسبحة)، `brand/refs/pen.jpg`.
+- الرايات: العلم بالكتابة، بس **بعيد ومغبّش** بالغبار والفوكس عشان الكتابة ما تنقرى. شيّك كل لقطة فيها رايات قبل ما تعتمدها.
 
 ## الأسعار (سبتمبر ٢٠٢٦)
 | الشي | التكلفة |
@@ -24,7 +25,7 @@
 **اليوم:**
 `Cinematic, warm modern Najdi majlis at golden hour: beige walls with subtle traditional triangular niches, low floor seating with red-and-black Sadu cushions, brass dallah and small finjan cups, warm practical lamp light, rich browns and gold, gentle 35mm film grain, shallow depth of field. Main subject centered in frame (vertical-safe).`
 
-## الخطوة ١: الشخصيات (صور مرجعية)
+## الخطوة ١: الشخصيات (صور مرجعية، معتمد: الخمس كلهم، 5 × 0.5 = 2.5 كريدت)
 | الملف | الوصف |
 |---|---|
 | char-boy.png | Saudi boy about 9 years old, early 1900s Najd, thin face, deep brown determined eyes, sun-darkened skin, simple off-white thobe, plain white ghutra loosely wrapped, dusty. Front-facing portrait, neutral background. |
@@ -36,7 +37,7 @@
 ## الخطوة ٢: اللقطات
 | # | مدة | المراجع | البرومبت (بعد بلوك الستايل) |
 |---|---|---|---|
-| 01 | 4 | char-father | Dawn. A long line of horsemen on a dune crest, silhouetted against the rising sun, green banners fluttering, dust drifting. Slow push-in. |
+| 01 | 4 | char-father | Dawn. A long line of horsemen on a dune crest, silhouetted against the rising sun, dust drifting. Green flags with white Arabic calligraphy flutter far in the background, small and softened by dust haze and shallow focus so the writing is not legible. Slow push-in. |
 | 02 | 4 | char-father, char-boy, misbaha-palm | Extreme close-up: a weathered man's hand places a black prayer-bead misbaha with a round silver filigree tassel into a small boy's open palm. Dust particles in the backlight. |
 | 03 | 3 | char-boy | Close-up of the boy's face, determined eyes, wind moving his ghutra, dust in the air. Very slow push-in. |
 | 04 | 4 | char-leader | The leader on a dark horse in front of a massive mud-brick fort with round towers, raising his hand; horsemen behind him begin to move. Low angle. |
