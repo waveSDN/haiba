@@ -1,0 +1,8 @@
+out/
+__pycache__/
+footage/*
+!footage/README.txt
+shots/**/*.mp4
+shots/**/*.mov
+audio/*
+!audio/README.txt
