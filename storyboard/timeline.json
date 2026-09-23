@@ -1,59 +1,75 @@
 {
-  "_note": "مصدر الحقيقة للمونتاج. كل مشهد: sources = أول ملف موجود يُستخدم (فيديو أو صورة). in = من أي ثانية في المقطع نبدأ. dur = المدة. still = صورة بديلة للنسخة الأولية لو المقطع ناقص.",
+  "_note": "مصدر الحقيقة للمونتاج. المشهد إما sources+in+dur أو shots (لقطات قصيرة: src ملف أو قائمة ملفات، أول موجود يُستخدم). in = من أي ثانية نبدأ في المقطع. مقاطع footage مقطّعة على الإيقاع (قطع كل ~٠٫٧ث)، فخل كل لقطة داخل حدود القطع المكتوبة في footage/README.txt.",
   "width": 1080,
   "height": 1920,
   "fps": 30,
   "scenes": [
     {
       "id": 1,
-      "title": "الجمس في الحارة",
-      "sources": ["footage/gmc.mov"],
-      "in": 0.0,
-      "dur": 3.5,
-      "desc": "الجمس الأحمر واقف بين النخل والجدار الطين. لقطة تأسيسية."
+      "title": "من رسمة البوكس للواقع",
+      "desc": "الديرة الطين والخيّال بستايل رسمة البوكس، ثم الجمس في الرسمة، ثم الجمس الحقيقي.",
+      "shots": [
+        {"src": "higgsfield/renders/art-village.png", "dur": 1.3},
+        {"src": "higgsfield/renders/art-gmc-road.png", "dur": 1.2},
+        {"src": "footage/gmc.mov", "in": 15.12, "dur": 1.0}
+      ]
     },
     {
       "id": 2,
       "title": "البوكس مكان الجريدة",
-      "sources": ["shots/s02.mp4"],
-      "still": "brand/s02-still.jpg",
-      "in": 0.0,
-      "dur": 4.5,
-      "desc": "الرجل بالثوب والشماغ يرفع بوكس هيبة مكان الجريدة. لقطة Higgsfield."
+      "desc": "الرجل يقرأ SAUDI NEWS، قريب على الجريدة، ثم يرفع بوكس هيبة مكانها (لقطة Higgsfield).",
+      "shots": [
+        {"src": "footage/gmc.mov", "in": 0.02, "dur": 0.66},
+        {"src": "footage/gmc.mov", "in": 4.19, "dur": 0.62},
+        {"src": ["shots/s02.mp4", "brand/s02-still.jpg"], "dur": 3.22}
+      ]
     },
     {
       "id": 3,
-      "title": "داخل الجمس",
-      "sources": ["footage/gmc.mov"],
-      "in": 4.0,
-      "dur": 4.5,
-      "desc": "من داخل الجمس: الدركسون والطبلون والضوء من الشباك."
+      "title": "الهدايا في الجمس",
+      "desc": "اليد على الطبلون، الباب ينفتح، الأكياس تنزل من الجمس وعلى المرتبة.",
+      "shots": [
+        {"src": "footage/gmc.mov", "in": 0.75, "dur": 1.38},
+        {"src": "footage/gmc.mov", "in": 6.25, "dur": 0.63},
+        {"src": "footage/gmc.mov", "in": 6.92, "dur": 0.66},
+        {"src": "footage/gmc.mov", "in": 7.62, "dur": 0.58},
+        {"src": "footage/gmc.mov", "in": 13.12, "dur": 0.63},
+        {"src": "footage/gmc.mov", "in": 13.79, "dur": 0.62}
+      ]
     },
     {
       "id": 4,
-      "title": "تفاصيل البوكس",
-      "sources": ["footage/box.mov"],
-      "still": "brand/box-studio.jpg",
-      "in": 0.0,
-      "dur": 4.5,
-      "desc": "قريب على البوكس: الصحراء المرسومة، الخيّال، وحد السدو."
+      "title": "فتح البوكس",
+      "desc": "الأكياس على الكنب، رسمة الكيس، الكيس بيده، البوكس على حضنه، يفتحه، القلم والمسبحة.",
+      "shots": [
+        {"src": "footage/box.mov", "in": 0.02, "dur": 0.76},
+        {"src": "footage/box.mov", "in": 0.82, "dur": 0.64},
+        {"src": "footage/box.mov", "in": 1.67, "dur": 0.76},
+        {"src": "footage/box.mov", "in": 3.24, "dur": 0.79},
+        {"src": "footage/box.mov", "in": 4.07, "dur": 0.78},
+        {"src": "footage/box.mov", "in": 4.89, "dur": 0.77}
+      ]
     },
     {
       "id": 5,
-      "title": "الأكياس والحبل الذهبي",
-      "sources": ["footage/box.mov"],
-      "in": 4.5,
-      "dur": 4.5,
-      "desc": "الأيادي تشيل أكياس الهدايا بالحبل الذهبي."
+      "title": "التفاصيل والخيّال",
+      "desc": "القلم، المسبحة بالكف، المبخرة، المسبحة على الجلد، ثم الخيّال بالعلم وقت الغروب بستايل الرسمة.",
+      "shots": [
+        {"src": "footage/box.mov", "in": 5.70, "dur": 0.82},
+        {"src": "footage/box.mov", "in": 7.39, "dur": 0.76},
+        {"src": "footage/box.mov", "in": 12.22, "dur": 0.80},
+        {"src": "footage/box.mov", "in": 13.87, "dur": 0.74},
+        {"src": "higgsfield/renders/art-rider-flag.png", "dur": 1.38}
+      ]
     },
     {
       "id": 6,
       "title": "البوكس على مرتبة الجمس",
-      "sources": ["shots/s06.mp4"],
+      "desc": "البوكس والأكياس على مرتبة الجمس وقت الغروب، الكاميرا تقرّب (Higgsfield Cinema Studio).",
+      "sources": ["shots/s06.mp4", "higgsfield/renders/s06-cinema.mp4"],
       "still": "brand/s06-still.jpg",
       "in": 0.0,
-      "dur": 4.0,
-      "desc": "البوكس والأكياس على مرتبة الجمس الحمراء. لقطة Higgsfield."
+      "dur": 4.0
     },
     {
       "id": 7,

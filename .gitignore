@@ -6,3 +6,4 @@ shots/**/*.mp4
 shots/**/*.mov
 audio/*
 !audio/README.txt
+higgsfield/renders/

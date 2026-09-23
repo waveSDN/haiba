@@ -192,24 +192,56 @@ def render_video(src, scene, cfg, dest, warnings):
     run(["-ss", start, "-i", src, "-vf", ",".join(chain), "-t", dur, *encode_args(cfg), dest])
 
 
-def render_scene(scene, cfg, work, warnings):
-    dest = work / f"scene-{scene['id']}.mp4"
-    src = next((ROOT / s for s in scene["sources"] if (ROOT / s).exists()), None)
+def scene_shots(scene):
+    """المشهد إما مصدر واحد (sources) أو عدة لقطات قصيرة (shots). نرجّعها كلها كلقطات."""
+    base = {"title": scene["title"], "desc": scene.get("desc", "")}
+    if "shots" not in scene:
+        return [{**base, "id": str(scene["id"]), "sources": scene["sources"], "in": scene.get("in", 0.0),
+                 "dur": scene["dur"], "still": scene.get("still")}]
+    shots = []
+    for k, shot in enumerate(scene["shots"], 1):
+        src = shot["src"]
+        shots.append({**base, "id": f"{scene['id']}.{k}", "sources": [src] if isinstance(src, str) else src,
+                      "in": shot.get("in", 0.0), "dur": shot["dur"], "still": shot.get("still")})
+    return shots
+
+
+def scene_dur(scene):
+    return round(sum(s["dur"] for s in scene_shots(scene)), 3)
+
+
+def render_shot(shot, cfg, work, warnings):
+    dest = work / f"shot-{shot['id']}.mp4"
+    src = next((ROOT / s for s in shot["sources"] if (ROOT / s).exists()), None)
     if src and src.suffix.lower() in VIDEO_EXT:
-        render_video(src, scene, cfg, dest, warnings)
-        used = src.relative_to(ROOT).as_posix()
+        render_video(src, shot, cfg, dest, warnings)
+        used = src.relative_to(ROOT).as_posix() + f" @{shot['in']}"
     elif src:
-        render_still(src, scene, cfg, dest, work, zoom=0.04)
+        render_still(src, shot, cfg, dest, work, zoom=0.05)
         used = src.relative_to(ROOT).as_posix()
-    elif scene.get("still") and (ROOT / scene["still"]).exists():
-        render_still(ROOT / scene["still"], scene, cfg, dest, work)
-        used = f"{scene['still']}  (صورة مؤقتة بدل {scene['sources'][0]})"
+    elif shot.get("still") and (ROOT / shot["still"]).exists():
+        render_still(ROOT / shot["still"], shot, cfg, dest, work)
+        used = f"{shot['still']}  (صورة مؤقتة بدل {shot['sources'][0]})"
     else:
-        card = work / f"scene-{scene['id']}-card.png"
-        placeholder_card(scene, scene["sources"][0], cfg["w"], cfg["h"], card)
-        render_still(card, scene, cfg, dest, work, zoom=0.02)
-        used = f"كرت بديل  (ناقص {scene['sources'][0]})"
+        card = work / f"shot-{shot['id']}-card.png"
+        placeholder_card(shot, shot["sources"][0], cfg["w"], cfg["h"], card)
+        render_still(card, shot, cfg, dest, work, zoom=0.02)
+        used = f"كرت بديل  (ناقص {shot['sources'][0]})"
     return dest, used
+
+
+def concat(clips, dest, work):
+    listing = work / f"{dest.stem}.txt"
+    listing.write_text("".join(f"file '{c.as_posix()}'\n" for c in clips), encoding="utf-8")
+    run(["-f", "concat", "-safe", 0, "-i", listing, "-c", "copy", dest])
+
+
+def render_scene(scene, cfg, work, warnings):
+    """يرجّع ملف المشهد وقائمة (مدة اللقطة، وش استخدمنا فيها)."""
+    rendered = [(render_shot(shot, cfg, work, warnings), shot["dur"]) for shot in scene_shots(scene)]
+    dest = work / f"scene-{scene['id']}.mp4"
+    concat([clip for (clip, _), _ in rendered], dest, work)
+    return dest, [(dur, used) for (_, used), dur in rendered]
 
 
 # ---------- الصوت ----------
@@ -248,7 +280,7 @@ def contact_sheet(clips, cfg, dest):
     thumbs = []
     for clip, scene in clips:
         frame = clip.with_suffix(".jpg")
-        run(["-ss", scene["dur"] / 2, "-i", clip, "-frames:v", 1, "-q:v", 3, frame])
+        run(["-ss", scene_dur(scene) / 2, "-i", clip, "-frames:v", 1, "-q:v", 3, frame])
         thumbs.append(Image.open(frame).resize((270, 480)))
     sheet = Image.new("RGB", (len(thumbs) * 280 + 10, 490), BG_DARK)
     for i, t in enumerate(reversed(thumbs)):  # من اليمين لليسار
@@ -278,20 +310,20 @@ def main():
     warnings, clips, t = [], [], 0.0
     print(f"{cfg['w']}x{cfg['h']} @ {cfg['fps']}fps\n")
     for scene in scenes:
-        clip, used = render_scene(scene, cfg, work, warnings)
+        clip, shots = render_scene(scene, cfg, work, warnings)
         clips.append((clip, scene))
-        print(f"  {t:5.1f} - {t + scene['dur']:5.1f}  [{scene['id']}] {scene['title']}: {used}")
-        t += scene["dur"]
+        print(f"  {t:5.2f} - {t + scene_dur(scene):5.2f}  [{scene['id']}] {scene['title']}")
+        for dur, used in shots:
+            print(f"               {dur:4.2f}ث  {used}")
+        t += scene_dur(scene)
 
-    listing = work / "concat.txt"
-    listing.write_text("".join(f"file '{c.as_posix()}'\n" for c, _ in clips), encoding="utf-8")
     silent = work / "video.mp4"
-    run(["-f", "concat", "-safe", 0, "-i", listing, "-c", "copy", silent])
+    concat([c for c, _ in clips], silent, work)
 
     name = f"scene-{args.only}.mp4" if args.only else ("preview.mp4" if args.preview else "haybah-nd96.mp4")
     dest = Path(args.out) if args.out else OUT / name
     dest.parent.mkdir(parents=True, exist_ok=True)
-    offset = sum(s["dur"] for s in tl["scenes"][: tl["scenes"].index(scenes[0])]) if args.only else 0.0
+    offset = sum(scene_dur(s) for s in tl["scenes"][: tl["scenes"].index(scenes[0])]) if args.only else 0.0
     vo, music = mix_audio(silent, t, dest, offset)
     if not args.only:
         contact_sheet(clips, cfg, OUT / "contact-sheet.jpg")

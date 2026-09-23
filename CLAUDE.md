@@ -7,15 +7,16 @@
 ## الملفات
 | المسار | وش فيه |
 |---|---|
-| `storyboard/timeline.json` | **مصدر الحقيقة للمونتاج**: المشاهد بالترتيب، المصدر، نقطة البداية `in`، المدة `dur` |
+| `storyboard/timeline.json` | **مصدر الحقيقة للمونتاج**: المشاهد بالترتيب. المشهد إما مصدر واحد (`sources`+`in`+`dur`) أو عدة لقطات (`shots`) |
 | `storyboard/script.txt` | نص التعليق الصوتي مع التوقيت. لازم يطابق timeline.json |
 | `scripts/assemble.py` | يركّب الفيديو بـ ffmpeg ويدمج الصوت |
-| `footage/` | تصوير الجوال: `gmc.mov` (مقطع اليوم الوطني) و`box.mov` (مقطع البوكس) |
+| `footage/` | تصوير الجوال: `gmc.mov` (مقطع اليوم الوطني) و`box.mov` (مقطع البوكس). حدود القطع في `footage/README.txt` |
 | `shots/` | لقطات Higgsfield المعتمدة: `s02.mp4` و`s06.mp4`. التجارب في `shots/takes/` |
 | `audio/` | `vo.wav` التعليق (٣٠ث من الصفر) و`music.mp3` اختياري |
 | `brand/` | `endcard.jpg` الخاتمة، `logo-card.png`، `box-studio.jpg`، وصور مؤقتة للمشهدين ٢ و٦ |
 | `fonts/` | خط «عام الحرف اليدوية» (The Year of Handicrafts). عربي فقط، ما فيه حروف لاتينية |
-| `higgsfield/prompts.md` | برومبتات اللقطتين s02 وs06 |
+| `higgsfield/prompts.md` | البرومبتات والأسعار |
+| `higgsfield/renders.json` | مخرجات Higgsfield (رسومات بستايل البوكس + لقطة s06). تنزل لـ `higgsfield/renders/` |
 | `out/` | المخرجات، ما تنرفع على git |
 
 ملفات الميديا (mov/mp4/wav/mp3) ما تنرفع على git. تبقى على جهاز صاحب المشروع.
@@ -26,13 +27,16 @@ pip install -r requirements.txt
 python scripts/assemble.py --preview   # out/preview.mp4 (540x960، سريع)
 python scripts/assemble.py             # out/haybah-nd96.mp4 (النهائي)
 python scripts/assemble.py --only 3    # out/scene-3.mp4 مع الصوت من نفس التوقيت
+python scripts/fetch_renders.py        # ينزّل مخرجات Higgsfield
+python scripts/poster.py               # out/poster.png بوستر اليوم الوطني من art-poster.png
 ```
 كل تشغيل يطلع `out/contact-sheet.jpg` (فريم من نص كل مشهد، من اليمين لليسار). افتحها وشيّك بعينك بعد أي تعديل.
 
 ## قواعد
-- أي تعديل على المونتاج («طوّل لقطة الجمس في المشهد ٣») يصير في `timeline.json`: غيّر `dur` أو `in`. مجموع المدد لازم يبقى **٣٠ ثانية**، فلو طوّلت مشهد قصّر اللي جنبه. بعدها حدّث التوقيتات في `script.txt` وشغّل `--preview`.
+- أي تعديل على المونتاج («طوّل لقطة الجمس في المشهد ٣») يصير في `timeline.json`: غيّر `dur` أو `in`. مقاطع footage مقطّعة على الإيقاع (قطع كل ~٠٫٧ث)، فلازم `in`+`dur` يبقى داخل حدود لقطة وحدة من `footage/README.txt` وإلا بيطلع فريم من اللقطة اللي بعدها. مجموع المدد لازم يبقى **٣٠ ثانية**، فلو طوّلت مشهد قصّر اللي جنبه. بعدها حدّث التوقيتات في `script.txt` وشغّل `--preview`.
 - المصدر الناقص يتعوّض تلقائي بـ `still` أو بكرت بديل. السكربت يطبع وش استخدم لكل مشهد، فاقرأ المخرجات وبلّغ عن الناقص.
-- مقاطع الآيفون غالبًا HDR (HLG). السكربت يحوّلها SDR بـ zscale. لو طلع تنبيه إن zscale مو موجود، ثبّت ffmpeg كامل: `winget install Gyan.FFmpeg`.
-- **Higgsfield: لا تصرف أي كريدت قبل ما تعرض التكلفة وتاخذ موافقة صريحة.** اللقطات المعتمدة موجودة. أي تجربة جديدة تنحفظ في `shots/takes/` ولا تستبدل `s02.mp4` أو `s06.mp4` إلا لما يعتمدها صاحب المشروع.
+- مقاطع footage الحالية SDR. لو جات مقاطع آيفون HDR (HLG) فالسكربت يحوّلها SDR بـ zscale. لو طلع تنبيه إن zscale مو موجود، ثبّت ffmpeg كامل: `winget install Gyan.FFmpeg`.
+- **Higgsfield: لا تصرف أي كريدت قبل ما تعرض التكلفة وتاخذ موافقة صريحة.** الخطة مجانية والرصيد شبه خالص. اللقطات المعتمدة موجودة.
+- أي توليد جديد: سجّله في `higgsfield/renders.json` (الاسم، job_id، الرابط، وين ينستخدم) عشان `fetch_renders.py` ينزّله. أي تجربة جديدة تنحفظ في `shots/takes/` ولا تستبدل `s02.mp4` أو `s06.mp4` إلا لما يعتمدها صاحب المشروع.
 - النصوص العربية على الشاشة ترسمها Pillow بخط `fonts/` (يحتاج raqm أو arabic-reshaper + python-bidi). ffmpeg drawtext ما يشكّل العربي صح، فلا تستخدمه.
 - الهوية: بني غامق `#241312`، ذهبي `#F8B040`، كريمي `#F0E2CE`.
